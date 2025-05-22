@@ -24,6 +24,7 @@
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
     "@fullcalendar/core": "npm:@fullcalendar/core@^6.1.17",
     "@fullcalendar/daygrid": "npm:@fullcalendar/daygrid@^6.1.17",
+    "@fullcalendar/interaction": "npm:@fullcalendar/interaction@^6.1.17",
     "preact": "https://esm.sh/preact@10.22.0",
     "preact/": "https://esm.sh/preact@10.22.0/",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",

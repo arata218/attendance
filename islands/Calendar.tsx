@@ -1,5 +1,6 @@
 import { Calendar } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useRef } from "preact/hooks";
 
 export default function CalendarComponent() {
@@ -9,7 +10,7 @@ export default function CalendarComponent() {
     if (!calendarRef.current) return;
 
     const calendar = new Calendar(calendarRef.current, {
-      plugins: [dayGridPlugin],
+      plugins: [dayGridPlugin, interactionPlugin],
       initialView: "dayGridMonth",
       headerToolbar: {
         left: "prev,next",
@@ -17,6 +18,9 @@ export default function CalendarComponent() {
         right: "today",
       },
       locale: "ja",
+      dateClick: (info: { dateStr: string }) => {
+        globalThis.location.href = `/date/${info.dateStr}`;
+      },
     });
     calendar.render();
 
