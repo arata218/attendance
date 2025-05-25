@@ -3,11 +3,39 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useRef } from "preact/hooks";
 
+function getEventColor(result: string) {
+  if (result === "出席") return "#2563eb"; // 青
+  if (result === "欠席") return "#dc2626"; // 赤
+  return undefined;
+}
+
+function getEventTitle(result: string) {
+  if (result === "出席") return "出席";
+  if (result === "欠席") return "欠席";
+  return "";
+}
+
 export default function CalendarComponent() {
   const calendarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!calendarRef.current) return;
+
+    // クエリから日付と出欠情報を取得
+    const url = new URL(globalThis.location.href);
+    const dateStr = url.searchParams.get("dateStr");
+    const result = url.searchParams.get("result");
+
+    const events = [];
+    if (dateStr && result) {
+      events.push({
+        title: getEventTitle(result),
+        start: dateStr,
+        color: getEventColor(result),
+        textColor: "#ffffff",
+        allDay: true,
+      });
+    }
 
     const calendar = new Calendar(calendarRef.current, {
       plugins: [dayGridPlugin, interactionPlugin],
@@ -18,6 +46,7 @@ export default function CalendarComponent() {
         right: "today",
       },
       locale: "ja",
+      events,
       dateClick: (info: { dateStr: string }) => {
         globalThis.location.href = `/date/${info.dateStr}`;
       },

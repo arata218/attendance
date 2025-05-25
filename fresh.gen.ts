@@ -7,6 +7,7 @@ import * as $_app from "./routes/_app.tsx";
 import * as $date_dateStr_ from "./routes/date/[dateStr].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $Calendar from "./islands/Calendar.tsx";
+import * as $DateForm from "./islands/DateForm.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -18,6 +19,7 @@ const manifest = {
   },
   islands: {
     "./islands/Calendar.tsx": $Calendar,
+    "./islands/DateForm.tsx": $DateForm,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;
