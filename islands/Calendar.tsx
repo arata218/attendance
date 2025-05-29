@@ -9,12 +9,6 @@ function getEventColor(result: string) {
   return undefined;
 }
 
-function getEventTitle(result: string) {
-  if (result === "出席") return "出席";
-  if (result === "欠席") return "欠席";
-  return "";
-}
-
 export default function CalendarComponent() {
   const calendarRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +23,7 @@ export default function CalendarComponent() {
     const events = [];
     if (dateStr && result) {
       events.push({
-        title: getEventTitle(result),
+        title: result,
         start: dateStr,
         color: getEventColor(result),
         textColor: "#ffffff",

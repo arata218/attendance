@@ -4,8 +4,6 @@ import DateForm from "../../islands/DateForm.tsx";
 export const handler: Handlers = {
   GET(_req, ctx) {
     const { dateStr } = ctx.params;
-    // const url = new URL(req.url);
-    // const selected = url.searchParams.get("result") ?? "";
     return ctx.render({ dateStr });
   },
 };
