@@ -20,10 +20,14 @@ export default function CalendarComponent() {
         const attendance = JSON.parse(decodeURIComponent(attendanceRaw));
         // 出席・遅刻の人数カウント
         const presentCount = Object.values(attendance).filter(
-          (v) => v === "出席" || (v && typeof v === "object" && "status" in v && v.status === "出席")
+          (v) =>
+            v === "出席" ||
+            (v && typeof v === "object" && "status" in v &&
+              v.status === "出席"),
         ).length;
         const lateCount = Object.values(attendance).filter(
-          (v) => v && typeof v === "object" && "status" in v && v.status === "遅刻"
+          (v) =>
+            v && typeof v === "object" && "status" in v && v.status === "遅刻",
         ).length;
         if (presentCount > 0) {
           events.push({

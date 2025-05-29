@@ -18,15 +18,23 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
   const [lateTimes, setLateTimes] = useState<Record<string, string>>(
     Object.fromEntries(members.map((m) => [m, ""])),
   );
+  // 各メンバーの早退時刻を管理
+  const [leaveTimes, setLeaveTimes] = useState<Record<string, string>>(
+    Object.fromEntries(members.map((m) => [m, ""])),
+  );
 
-  // 遅刻時刻の選択肢（20:00〜21:30を30分刻み）
+  // 遅刻・早退時刻の選択肢（20:00〜21:30を30分刻み）
   const timeOptions = ["20:00", "20:30", "21:00", "21:30"];
 
   const handleChange = (member: string, value: string) => {
     setAttendance((prev) => ({ ...prev, [member]: value }));
-    // 遅刻以外を選んだら時刻をリセット
+    // 遅刻以外を選んだら遅刻時刻をリセット
     if (value !== "遅刻") {
       setLateTimes((prev) => ({ ...prev, [member]: "" }));
+    }
+    // 出席以外を選んだら早退時刻をリセット
+    if (value !== "出席") {
+      setLeaveTimes((prev) => ({ ...prev, [member]: "" }));
     }
   };
 
@@ -34,18 +42,26 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
     setLateTimes((prev) => ({ ...prev, [member]: value }));
   };
 
+  const handleLeaveTimeChange = (member: string, value: string) => {
+    setLeaveTimes((prev) => ({ ...prev, [member]: value }));
+  };
+
   const handleSubmit = (e: Event) => {
     e.preventDefault();
-    // 出欠情報と遅刻時刻をまとめて送信
+    // 出欠情報・遅刻時刻・早退時刻をまとめて送信
     const attendanceWithTime = Object.fromEntries(
-      members.map((
-        m,
-      ) => [
-        m,
-        attendance[m] === "遅刻"
-          ? { status: "遅刻", time: lateTimes[m] }
-          : attendance[m],
-      ]),
+      members.map((m) => {
+        if (attendance[m] === "遅刻") {
+          return [m, { status: "遅刻", time: lateTimes[m] }];
+        } else if (attendance[m] === "出席") {
+          return [
+            m,
+            leaveTimes[m] ? { status: "出席", leave: leaveTimes[m] } : "出席",
+          ];
+        } else {
+          return [m, attendance[m]];
+        }
+      }),
     );
     const attendanceParam = encodeURIComponent(
       JSON.stringify(attendanceWithTime),
@@ -62,6 +78,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
           <tr>
             <th class="px-4 py-2 border">団員名</th>
             <th class="px-4 py-2 border">出席</th>
+            <th class="px-4 py-2 border">早退時刻</th>
             <th class="px-4 py-2 border">遅刻</th>
             <th class="px-4 py-2 border">出席可能時刻</th>
             <th class="px-4 py-2 border">欠席</th>
@@ -82,6 +99,24 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                 />
               </td>
               <td class="px-4 py-2 border text-center">
+                <select
+                  value={leaveTimes[member]}
+                  onChange={(e) =>
+                    handleLeaveTimeChange(
+                      member,
+                      (e.target as HTMLSelectElement).value,
+                    )}
+                  disabled={attendance[member] !== "出席"}
+                  class={
+                    `px-2 py-1 border rounded w-32 text-base transition-colors ` +
+                    (attendance[member] !== "出席" ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-black")
+                  }
+                >
+                  <option value="">なし</option>
+                  {timeOptions.map((t) => <option value={t} key={t}>{t}</option>)}
+                </select>
+              </td>
+              <td class="px-4 py-2 border text-center">
                 <input
                   type="radio"
                   name={member}
@@ -100,11 +135,13 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                       (e.target as HTMLSelectElement).value,
                     )}
                   disabled={attendance[member] !== "遅刻"}
-                  class="px-2 py-1 border rounded w-32 text-base"
+                  class={
+                    `px-2 py-1 border rounded w-32 text-base transition-colors ` +
+                    (attendance[member] !== "遅刻" ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-black")
+                  }
                 >
-                  <option value="">選択</option>
-                  {timeOptions.map((t) => <option value={t} key={t}>{t}
-                  </option>)}
+                  <option value="">未入力</option>
+                  {timeOptions.map((t) => <option value={t} key={t}>{t}</option>)}
                 </select>
               </td>
               <td class="px-4 py-2 border text-center">
