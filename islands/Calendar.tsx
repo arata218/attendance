@@ -3,12 +3,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useRef } from "preact/hooks";
 
-function getEventColor(result: string) {
-  if (result === "出席") return "#2563eb"; // 青
-  if (result === "欠席") return "#dc2626"; // 赤
-  return undefined;
-}
-
 export default function CalendarComponent() {
   const calendarRef = useRef<HTMLDivElement>(null);
 
@@ -18,17 +12,40 @@ export default function CalendarComponent() {
     // クエリから日付と出欠情報を取得
     const url = new URL(globalThis.location.href);
     const dateStr = url.searchParams.get("dateStr");
-    const result = url.searchParams.get("result");
-
+    const attendanceRaw = url.searchParams.get("attendance");
     const events = [];
-    if (dateStr && result) {
-      events.push({
-        title: result,
-        start: dateStr,
-        color: getEventColor(result),
-        textColor: "#ffffff",
-        allDay: true,
-      });
+
+    if (dateStr && attendanceRaw) {
+      try {
+        const attendance = JSON.parse(decodeURIComponent(attendanceRaw));
+        // 出席・遅刻の人数カウント
+        const presentCount = Object.values(attendance).filter(
+          (v) => v === "出席" || (v && typeof v === "object" && "status" in v && v.status === "出席")
+        ).length;
+        const lateCount = Object.values(attendance).filter(
+          (v) => v && typeof v === "object" && "status" in v && v.status === "遅刻"
+        ).length;
+        if (presentCount > 0) {
+          events.push({
+            title: `出席 ${presentCount}人`,
+            start: dateStr,
+            color: "#2563eb",
+            textColor: "#fff",
+            allDay: true,
+          });
+        }
+        if (lateCount > 0) {
+          events.push({
+            title: `遅刻 ${lateCount}人`,
+            start: dateStr,
+            color: "#dc2626",
+            textColor: "#fff",
+            allDay: true,
+          });
+        }
+      } catch (_) {
+        // attendanceのパースに失敗した場合は何もしない
+      }
     }
 
     const calendar = new Calendar(calendarRef.current, {
