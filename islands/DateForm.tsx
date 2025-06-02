@@ -7,15 +7,15 @@ type Member = {
 };
 // 仮のメンバー一覧
 const members: Member[] = [
-  { id: "20-01", name: "山田 太郎" },
-  { id: "20-02", name: "佐藤 花子", role: "班長" },
-  { id: "21-01", name: "鈴木 次郎" },
   { id: "21-02", name: "田中 美咲", role: "分団長" },
-  { id: "22-01", name: "高橋 健一" },
   { id: "22-02", name: "中村 直樹", role: "副分団長" },
+  { id: "20-02", name: "佐藤 花子", role: "班長" },
   { id: "23-01", name: "小林 未来", role: "班長" },
-  { id: "23-02", name: "加藤 大輔" },
   { id: "24-01", name: "渡辺 さくら", role: "班長" },
+  { id: "20-01", name: "山田 太郎" },
+  { id: "21-01", name: "鈴木 次郎" },
+  { id: "22-01", name: "高橋 健一" },
+  { id: "23-02", name: "加藤 大輔" },
   { id: "24-02", name: "斎藤 拓也" },
   { id: "25-01", name: "伊藤 亮介" },
   { id: "25-02", name: "森本 さやか" },
@@ -58,7 +58,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
     }
   };
 
-  const handleTimeChange = (member: string, value: string) => {
+  const handleLateTimeChange = (member: string, value: string) => {
     setLateTimes((prev) => ({ ...prev, [member]: value }));
   };
 
@@ -93,19 +93,6 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
     }&attendance=${attendanceParam}`;
   };
 
-  // ソート: 分団長→副分団長→班長→団員
-  const roleOrder = { "分団長": 0, "副分団長": 1, "班長": 2 };
-  const sortedMembers = [...members].sort((a, b) => {
-    const aOrder = a.role ? roleOrder[a.role] ?? 3 : 3;
-    const bOrder = b.role ? roleOrder[b.role] ?? 3 : 3;
-    if (aOrder !== bOrder) return aOrder - bOrder;
-    // 班長同士もid順、団員同士もid順
-    if ((aOrder === 2 && bOrder === 2) || (aOrder === 3 && bOrder === 3)) {
-      return a.id.localeCompare(b.id, "ja");
-    }
-    return a.name.localeCompare(b.name, "ja");
-  });
-
   return (
     <form class="flex flex-col items-center gap-6" onSubmit={handleSubmit}>
       <table class="bg-white shadow rounded border-collapse">
@@ -121,7 +108,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
           </tr>
         </thead>
         <tbody>
-          {sortedMembers.map((member) => (
+          {members.map((member) => (
             <tr key={member.id}>
               <td class="px-4 py-2 border text-lg">{member.name}</td>
               <td class="px-4 py-2 border text-center">
@@ -170,7 +157,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                 <select
                   value={lateTimes[member.id]}
                   onChange={(e) =>
-                    handleTimeChange(
+                    handleLateTimeChange(
                       member.id,
                       (e.target as HTMLSelectElement).value,
                     )}
