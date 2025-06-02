@@ -29,18 +29,27 @@ export default function CalendarComponent() {
           (v) =>
             v && typeof v === "object" && "status" in v && v.status === "遅刻",
         ).length;
-        if (presentCount > 0) {
+        // 欠席・未入力の人数カウント
+        const absentCount = Object.values(attendance).filter(
+          (v) => v === "欠席",
+        ).length;
+        const notInputCount = Object.values(attendance).filter(
+          (v) => v === "",
+        ).length;
+        // 出席・遅刻の合計を青背景で
+        if (presentCount > 0 || lateCount > 0) {
           events.push({
-            title: `出席 ${presentCount}人`,
+            title: `出席${presentCount} 遅刻${lateCount}`,
             start: dateStr,
             color: "#2563eb",
             textColor: "#fff",
             allDay: true,
           });
         }
-        if (lateCount > 0) {
+        // 欠席・未入力の合計を赤背景で
+        if (absentCount > 0 || notInputCount > 0) {
           events.push({
-            title: `遅刻 ${lateCount}人`,
+            title: `欠席${absentCount} 未入力${notInputCount}`,
             start: dateStr,
             color: "#dc2626",
             textColor: "#fff",

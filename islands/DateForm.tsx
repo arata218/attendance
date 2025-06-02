@@ -7,6 +7,21 @@ const members = [
   "鈴木 次郎",
   "田中 美咲",
   "高橋 健一",
+  "中村 直樹",
+  "小林 未来",
+  "加藤 大輔",
+  "渡辺 さくら",
+  "斎藤 拓也",
+];
+
+// 役職リスト
+const positions = [
+  "分団長",
+  "副分団長",
+  "班長",
+  "班長",
+  "班長",
+  ...Array(members.length - 5).fill("団員"),
 ];
 
 export default function DateForm({ dateStr }: { dateStr: string }) {
@@ -77,6 +92,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
         <thead>
           <tr>
             <th class="px-4 py-2 border">団員名</th>
+            <th class="px-4 py-2 border">役職</th>
             <th class="px-4 py-2 border">出席</th>
             <th class="px-4 py-2 border">早退時刻</th>
             <th class="px-4 py-2 border">遅刻</th>
@@ -85,9 +101,10 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
           </tr>
         </thead>
         <tbody>
-          {members.map((member) => (
+          {members.map((member, idx) => (
             <tr key={member}>
               <td class="px-4 py-2 border text-lg">{member}</td>
+              <td class="px-4 py-2 border text-center">{positions[idx]}</td>
               <td class="px-4 py-2 border text-center">
                 <input
                   type="radio"
@@ -107,13 +124,14 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                       (e.target as HTMLSelectElement).value,
                     )}
                   disabled={attendance[member] !== "出席"}
-                  class={
-                    `px-2 py-1 border rounded w-32 text-base transition-colors ` +
-                    (attendance[member] !== "出席" ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-black")
-                  }
+                  class={`px-2 py-1 border rounded w-32 text-base transition-colors ` +
+                    (attendance[member] !== "出席"
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : "bg-white text-black")}
                 >
                   <option value="">なし</option>
-                  {timeOptions.map((t) => <option value={t} key={t}>{t}</option>)}
+                  {timeOptions.map((t) => <option value={t} key={t}>{t}
+                  </option>)}
                 </select>
               </td>
               <td class="px-4 py-2 border text-center">
@@ -135,13 +153,14 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                       (e.target as HTMLSelectElement).value,
                     )}
                   disabled={attendance[member] !== "遅刻"}
-                  class={
-                    `px-2 py-1 border rounded w-32 text-base transition-colors ` +
-                    (attendance[member] !== "遅刻" ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-black")
-                  }
+                  class={`px-2 py-1 border rounded w-32 text-base transition-colors ` +
+                    (attendance[member] !== "遅刻"
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : "bg-white text-black")}
                 >
                   <option value="">未入力</option>
-                  {timeOptions.map((t) => <option value={t} key={t}>{t}</option>)}
+                  {timeOptions.map((t) => <option value={t} key={t}>{t}
+                  </option>)}
                 </select>
               </td>
               <td class="px-4 py-2 border text-center">
