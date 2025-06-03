@@ -1,3 +1,5 @@
+/// <reference lib="deno.unstable"/>
+
 import { useState } from "preact/hooks";
 import NavButtons from "../components/NavButtons.tsx";
 import { members } from "../lib/member.ts";
@@ -21,6 +23,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
     "9:00",
     "9:30",
     "10:00",
+    "10:30",
     "20:00",
     "20:30",
     "21:00",
@@ -37,29 +40,29 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
     setTimes((prev) => ({ ...prev, [member]: value }));
   };
 
-  const handleSubmit = (e: Event) => {
+  const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    // 出欠情報・時刻をまとめて送信
-    const attendanceWithTime = Object.fromEntries(
-      members.map((m) => {
-        if (attendance[m.id] === "遅刻") {
-          return [m.id, { status: "遅刻", time: times[m.id] }];
-        } else if (attendance[m.id] === "出席") {
-          return [
-            m.id,
-            times[m.id] ? { status: "出席", leave: times[m.id] } : "出席",
-          ];
-        } else {
-          return [m.id, attendance[m.id]];
-        }
-      }),
+    // 保存する値の構造: { [id]: { attendance, times? } }
+    const value = Object.fromEntries(
+      members.map((m) => [
+        m.id,
+        times[m.id]
+          ? { attendance: attendance[m.id], times: times[m.id] }
+          : { attendance: attendance[m.id] },
+      ]),
     );
-    const attendanceParam = encodeURIComponent(
-      JSON.stringify(attendanceWithTime),
-    );
-    globalThis.location.href = `/?dateStr=${
-      encodeURIComponent(dateStr)
-    }&attendance=${attendanceParam}`;
+    // API経由で保存
+    const res = await fetch("/api/attendance", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ dateStr, value }),
+    });
+    if (res.ok) {
+      console.log(dateStr, value);
+      // globalThis.location.href = `/?dateStr=${encodeURIComponent(dateStr)}`;
+    } else {
+      alert("保存に失敗しました");
+    }
   };
 
   return (

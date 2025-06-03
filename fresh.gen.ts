@@ -4,6 +4,7 @@
 
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
+import * as $api_attendance from "./routes/api/attendance.ts";
 import * as $date_dateStr_ from "./routes/date/[dateStr].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $Calendar from "./islands/Calendar.tsx";
@@ -14,6 +15,7 @@ const manifest = {
   routes: {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
+    "./routes/api/attendance.ts": $api_attendance,
     "./routes/date/[dateStr].tsx": $date_dateStr_,
     "./routes/index.tsx": $index,
   },
