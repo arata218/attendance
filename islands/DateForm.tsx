@@ -2,7 +2,8 @@
 
 import { useState } from "preact/hooks";
 import NavButtons from "../components/NavButtons.tsx";
-import { members } from "../lib/member.ts";
+import { members } from "../lib/members.ts";
+import { timeOptions } from "../lib/timeOptions.ts";
 
 export default function DateForm({ dateStr }: { dateStr: string }) {
   // 各メンバーの出欠状態を管理
@@ -13,22 +14,6 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
   const [time, setTime] = useState<Record<string, string>>(
     Object.fromEntries(members.map((m) => [m.id, ""])),
   );
-
-  // 遅刻・早退時刻の選択肢（20:00〜21:30を30分刻み）
-  const timeOptions = [
-    "7:00",
-    "7:30",
-    "8:00",
-    "8:30",
-    "9:00",
-    "9:30",
-    "10:00",
-    "10:30",
-    "20:00",
-    "20:30",
-    "21:00",
-    "21:30",
-  ];
 
   const handleChange = (member: string, value: string) => {
     setStatus((prev) => ({ ...prev, [member]: value }));
@@ -58,8 +43,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
       body: JSON.stringify({ dateStr, value }),
     });
     if (res.ok) {
-      console.log(dateStr, value);
-      // globalThis.location.href = `/?dateStr=${encodeURIComponent(dateStr)}`;
+      globalThis.location.href = "/";
     } else {
       alert("保存に失敗しました");
     }
