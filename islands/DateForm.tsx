@@ -6,11 +6,11 @@ import { members } from "../lib/member.ts";
 
 export default function DateForm({ dateStr }: { dateStr: string }) {
   // 各メンバーの出欠状態を管理
-  const [attendance, setAttendance] = useState<Record<string, string>>(
+  const [status, setStatus] = useState<Record<string, string>>(
     Object.fromEntries(members.map((m) => [m.id, ""])),
   );
   // 各メンバーの遅刻/早退時刻を統一して管理
-  const [times, setTimes] = useState<Record<string, string>>(
+  const [time, setTime] = useState<Record<string, string>>(
     Object.fromEntries(members.map((m) => [m.id, ""])),
   );
 
@@ -31,24 +31,24 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
   ];
 
   const handleChange = (member: string, value: string) => {
-    setAttendance((prev) => ({ ...prev, [member]: value }));
+    setStatus((prev) => ({ ...prev, [member]: value }));
     // ラジオボタン変更時は時刻入力もリセット
-    setTimes((prev) => ({ ...prev, [member]: "" }));
+    setTime((prev) => ({ ...prev, [member]: "" }));
   };
 
   const handleTimeChange = (member: string, value: string) => {
-    setTimes((prev) => ({ ...prev, [member]: value }));
+    setTime((prev) => ({ ...prev, [member]: value }));
   };
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    // 保存する値の構造: { [id]: { attendance, times? } }
+    // 保存する値の構造: { [id]: { status, time? } }
     const value = Object.fromEntries(
       members.map((m) => [
         m.id,
-        times[m.id]
-          ? { attendance: attendance[m.id], times: times[m.id] }
-          : { attendance: attendance[m.id] },
+        time[m.id]
+          ? { status: status[m.id], time: time[m.id] }
+          : { status: status[m.id] },
       ]),
     );
     // API経由で保存
@@ -94,7 +94,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                   type="radio"
                   name={member.id}
                   value="出席"
-                  checked={attendance[member.id] === "出席"}
+                  checked={status[member.id] === "出席"}
                   onChange={() => handleChange(member.id, "出席")}
                   class="w-5 h-5"
                 />
@@ -104,7 +104,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                   type="radio"
                   name={member.id}
                   value="遅刻"
-                  checked={attendance[member.id] === "遅刻"}
+                  checked={status[member.id] === "遅刻"}
                   onChange={() => handleChange(member.id, "遅刻")}
                   class="w-5 h-5"
                 />
@@ -114,7 +114,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                   type="radio"
                   name={member.id}
                   value="欠席"
-                  checked={attendance[member.id] === "欠席"}
+                  checked={status[member.id] === "欠席"}
                   onChange={() => handleChange(member.id, "欠席")}
                   class="w-5 h-5"
                 />
@@ -122,31 +122,31 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
               <td class="px-4 py-2 border text-center">
                 {/* 早退/出席可能時刻欄: 出席時は早退時刻, 遅刻時は出席可能時刻, それ以外はdisabled */}
                 <select
-                  value={attendance[member.id] === "出席" ||
-                      attendance[member.id] === "遅刻"
-                    ? times[member.id]
+                  value={status[member.id] === "出席" ||
+                      status[member.id] === "遅刻"
+                    ? time[member.id]
                     : ""}
                   onChange={(e) => {
                     const value = (e.target as HTMLSelectElement).value;
                     handleTimeChange(member.id, value);
                   }}
-                  disabled={attendance[member.id] !== "出席" &&
-                    attendance[member.id] !== "遅刻"}
+                  disabled={status[member.id] !== "出席" &&
+                    status[member.id] !== "遅刻"}
                   class={`px-2 py-1 border rounded w-32 text-base transition-colors ` +
-                    (attendance[member.id] !== "出席" &&
-                        attendance[member.id] !== "遅刻"
+                    (status[member.id] !== "出席" &&
+                        status[member.id] !== "遅刻"
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-white text-black")}
                 >
                   <option value="">
-                    {attendance[member.id] === "出席"
+                    {status[member.id] === "出席"
                       ? "早退なし"
-                      : attendance[member.id] === "遅刻"
+                      : status[member.id] === "遅刻"
                       ? "未入力"
                       : "-"}
                   </option>
-                  {(attendance[member.id] === "出席" ||
-                    attendance[member.id] === "遅刻") &&
+                  {(status[member.id] === "出席" ||
+                    status[member.id] === "遅刻") &&
                     timeOptions.map((t) => (
                       <option value={t} key={t}>{t}</option>
                     ))}
