@@ -7,4 +7,35 @@ export const handler: Handlers = {
     await kv.set(["attendance", dateStr], value);
     return new Response("ok");
   },
+
+  async GET(req) {
+    const url = new URL(req.url);
+    const month = url.searchParams.get("month");
+
+    if (!month) {
+      return new Response("Month parameter is required", { status: 400 });
+    }
+
+    const kv = await Deno.openKv();
+    const [year, m] = month.split("-").map(Number);
+    const last = new Date(year, m, 0).getDate();
+    const dates = Array.from(
+      { length: last },
+      (_, i) =>
+        `${year}-${String(m).padStart(2, "0")}-${
+          String(i + 1).padStart(2, "0")
+        }`,
+    );
+
+    const results = await Promise.all(
+      dates.map(async (date) => {
+        const res = await kv.get(["attendance", date]);
+        return [date, res.value ?? {}];
+      }),
+    );
+
+    return new Response(JSON.stringify(Object.fromEntries(results)), {
+      headers: { "Content-Type": "application/json" },
+    });
+  },
 };
