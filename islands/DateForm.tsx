@@ -92,96 +92,115 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
 
   return (
     <form
-      class="flex flex-col items-center gap-6"
+      class="flex flex-col items-center gap-4 sm:gap-6 w-full px-2 sm:px-4 md:px-6 lg:px-8"
       onSubmit={handleSubmit}
     >
-      <NavButtons dateStr={dateStr} />
-      <table class="bg-white shadow rounded border-collapse">
-        <thead>
-          <tr>
-            <th class="px-4 py-2 border">団員名</th>
-            <th class="px-4 py-2 border">役職</th>
-            <th class="px-4 py-2 border">出席</th>
-            <th class="px-4 py-2 border">遅刻</th>
-            <th class="px-4 py-2 border">欠席</th>
-            <th class="px-4 py-2 border">遅刻/早退時刻</th>
-          </tr>
-        </thead>
-        <tbody>
-          {members.map((member) => (
-            <tr key={member.id}>
-              <td class="px-4 py-2 border text-lg">{member.name}</td>
-              <td class="px-4 py-2 border text-center">
-                {member.role ?? "団員"}
-              </td>
-              <td class="px-4 py-2 border text-center">
-                <input
-                  type="radio"
-                  name={member.id}
-                  value="出席"
-                  checked={status[member.id] === "出席"}
-                  onChange={() => handleChange(member.id, "出席")}
-                  class="w-5 h-5"
-                />
-              </td>
-              <td class="px-4 py-2 border text-center">
-                <input
-                  type="radio"
-                  name={member.id}
-                  value="遅刻"
-                  checked={status[member.id] === "遅刻"}
-                  onChange={() => handleChange(member.id, "遅刻")}
-                  class="w-5 h-5"
-                />
-              </td>
-              <td class="px-4 py-2 border text-center">
-                <input
-                  type="radio"
-                  name={member.id}
-                  value="欠席"
-                  checked={status[member.id] === "欠席"}
-                  onChange={() => handleChange(member.id, "欠席")}
-                  class="w-5 h-5"
-                />
-              </td>
-              <td class="px-4 py-2 border text-center">
-                {/* 早退/出席可能時刻欄: 出席時は早退時刻, 遅刻時は出席可能時刻, それ以外はdisabled */}
-                <select
-                  value={status[member.id] === "出席" ||
-                      status[member.id] === "遅刻"
-                    ? time[member.id]
-                    : ""}
-                  onChange={(e) => {
-                    const value = (e.target as HTMLSelectElement).value;
-                    handleTimeChange(member.id, value);
-                  }}
-                  disabled={status[member.id] !== "出席" &&
-                    status[member.id] !== "遅刻"}
-                  class={`px-2 py-1 border rounded w-32 text-base transition-colors ` +
-                    (status[member.id] !== "出席" &&
-                        status[member.id] !== "遅刻"
-                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : "bg-white text-black")}
-                >
-                  <option value="">
-                    {status[member.id] === "出席"
-                      ? "早退なし"
-                      : status[member.id] === "遅刻"
-                      ? "未入力"
-                      : "-"}
-                  </option>
-                  {(status[member.id] === "出席" ||
-                    status[member.id] === "遅刻") &&
-                    timeOptions.map((t) => (
-                      <option value={t} key={t}>{t}</option>
-                    ))}
-                </select>
-              </td>
+      <div class="w-full max-w-3xl mx-auto">
+        <NavButtons dateStr={dateStr} />
+      </div>
+      <div class="w-full max-w-3xl mx-auto">
+        <table class="bg-white shadow rounded border-collapse w-full min-w-[320px]">
+          <thead>
+            <tr>
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[25%]">
+                団員名
+              </th>
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[20%]">
+                役職
+              </th>
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[10%]">
+                出席
+              </th>
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[10%]">
+                遅刻
+              </th>
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[10%]">
+                欠席
+              </th>
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[25%]">
+                遅刻/早退時刻
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <NavButtons dateStr={dateStr} />
+          </thead>
+          <tbody>
+            {members.map((member) => (
+              <tr key={member.id}>
+                <td class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base">
+                  {member.name}
+                </td>
+                <td class="px-1 sm:px-2 py-1 sm:py-2 border text-center text-xs sm:text-sm md:text-base">
+                  {member.role ?? "団員"}
+                </td>
+                <td class="px-1 sm:px-2 py-1 sm:py-2 border text-center">
+                  <input
+                    type="radio"
+                    name={member.id}
+                    value="出席"
+                    checked={status[member.id] === "出席"}
+                    onChange={() => handleChange(member.id, "出席")}
+                    class="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5"
+                  />
+                </td>
+                <td class="px-1 sm:px-2 py-1 sm:py-2 border text-center">
+                  <input
+                    type="radio"
+                    name={member.id}
+                    value="遅刻"
+                    checked={status[member.id] === "遅刻"}
+                    onChange={() => handleChange(member.id, "遅刻")}
+                    class="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5"
+                  />
+                </td>
+                <td class="px-1 sm:px-2 py-1 sm:py-2 border text-center">
+                  <input
+                    type="radio"
+                    name={member.id}
+                    value="欠席"
+                    checked={status[member.id] === "欠席"}
+                    onChange={() => handleChange(member.id, "欠席")}
+                    class="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5"
+                  />
+                </td>
+                <td class="px-1 sm:px-2 py-1 sm:py-2 border text-center">
+                  <select
+                    value={status[member.id] === "出席" ||
+                        status[member.id] === "遅刻"
+                      ? time[member.id]
+                      : ""}
+                    onChange={(e) => {
+                      const value = (e.target as HTMLSelectElement).value;
+                      handleTimeChange(member.id, value);
+                    }}
+                    disabled={status[member.id] !== "出席" &&
+                      status[member.id] !== "遅刻"}
+                    class={`px-0 sm:px-2 py-1 border rounded w-16 sm:w-20 md:w-24 text-xs sm:text-sm md:text-base transition-colors ` +
+                      (status[member.id] !== "出席" &&
+                          status[member.id] !== "遅刻"
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-white text-black")}
+                  >
+                    <option value="">
+                      {status[member.id] === "出席"
+                        ? "早退なし"
+                        : status[member.id] === "遅刻"
+                        ? "未入力"
+                        : "-"}
+                    </option>
+                    {(status[member.id] === "出席" ||
+                      status[member.id] === "遅刻") &&
+                      timeOptions.map((t) => (
+                        <option value={t} key={t}>{t}</option>
+                      ))}
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="w-full max-w-3xl mx-auto">
+        <NavButtons dateStr={dateStr} />
+      </div>
     </form>
   );
 }

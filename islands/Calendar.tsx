@@ -60,7 +60,7 @@ export default function CalendarComponent() {
 
         if (presentCount > 0 || lateCount > 0) {
           evts.push({
-            title: `出席${presentCount} 遅刻${lateCount}`,
+            title: `出${presentCount}遅${lateCount}`,
             start: dateStr,
             color: "#2563eb",
             textColor: "#fff",
@@ -69,7 +69,7 @@ export default function CalendarComponent() {
         }
         if (absentCount > 0 || notInputCount > 0) {
           evts.push({
-            title: `欠席${absentCount} 未入力${notInputCount}`,
+            title: `欠${absentCount}未${notInputCount}`,
             start: dateStr,
             color: "#dc2626",
             textColor: "#fff",
@@ -101,6 +101,16 @@ export default function CalendarComponent() {
       },
       locale: "ja",
       events: [],
+      height: "auto",
+      contentHeight: "auto",
+      aspectRatio: 1.35,
+      views: {
+        dayGridMonth: {
+          titleFormat: { year: "numeric", month: "short" },
+          dayHeaderFormat: { weekday: "short" },
+          dayMaxEvents: true,
+        },
+      },
       datesSet: async (info: DatesSetArg) => {
         // デバッグ用：全ての情報をログ出力
         console.log("datesSet event info:", {
@@ -161,9 +171,11 @@ export default function CalendarComponent() {
   }, []);
 
   return (
-    <div
-      ref={calendarRef}
-      class="bg-white shadow-lg mx-auto p-6 rounded-lg max-w-4xl"
-    />
+    <div class="w-full px-2 sm:px-4 md:px-6 lg:px-8">
+      <div
+        ref={calendarRef}
+        class="bg-white shadow-lg mx-auto p-1 sm:p-2 md:p-4 rounded-lg w-full max-w-4xl"
+      />
+    </div>
   );
 }
