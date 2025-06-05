@@ -10,32 +10,45 @@ export const handler: Handlers = {
 
   async GET(req) {
     const url = new URL(req.url);
+    const dateStr = url.searchParams.get("dateStr");
     const month = url.searchParams.get("month");
 
-    if (!month) {
-      return new Response("Month parameter is required", { status: 400 });
+    // dateStrパラメータがある場合は特定の日付のデータを取得
+    if (dateStr) {
+      const kv = await Deno.openKv();
+      const res = await kv.get(["attendance", dateStr]);
+      return new Response(JSON.stringify(res.value ?? {}), {
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    const kv = await Deno.openKv();
-    const [year, m] = month.split("-").map(Number);
-    const last = new Date(year, m, 0).getDate();
-    const dates = Array.from(
-      { length: last },
-      (_, i) =>
-        `${year}-${String(m).padStart(2, "0")}-${
-          String(i + 1).padStart(2, "0")
-        }`,
-    );
+    // monthパラメータがある場合は月のデータを取得
+    if (month) {
+      const kv = await Deno.openKv();
+      const [year, m] = month.split("-").map(Number);
+      const last = new Date(year, m, 0).getDate();
+      const dates = Array.from(
+        { length: last },
+        (_, i) =>
+          `${year}-${String(m).padStart(2, "0")}-${
+            String(i + 1).padStart(2, "0")
+          }`,
+      );
 
-    const results = await Promise.all(
-      dates.map(async (date) => {
-        const res = await kv.get(["attendance", date]);
-        return [date, res.value ?? {}];
-      }),
-    );
+      const results = await Promise.all(
+        dates.map(async (date) => {
+          const res = await kv.get(["attendance", date]);
+          return [date, res.value ?? {}];
+        }),
+      );
 
-    return new Response(JSON.stringify(Object.fromEntries(results)), {
-      headers: { "Content-Type": "application/json" },
+      return new Response(JSON.stringify(Object.fromEntries(results)), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response("Either dateStr or month parameter is required", {
+      status: 400,
     });
   },
 };
