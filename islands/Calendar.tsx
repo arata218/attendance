@@ -60,7 +60,7 @@ export default function CalendarComponent() {
 
         if (presentCount > 0 || lateCount > 0) {
           evts.push({
-            title: `出${presentCount} 遅${lateCount}`,
+            title: `出${presentCount}遅${lateCount}`,
             start: dateStr,
             color: "#2563eb",
             textColor: "#fff",
@@ -69,7 +69,7 @@ export default function CalendarComponent() {
         }
         if (absentCount > 0 || notInputCount > 0) {
           evts.push({
-            title: `欠${absentCount} 未${notInputCount}`,
+            title: `欠${absentCount}未${notInputCount}`,
             start: dateStr,
             color: "#dc2626",
             textColor: "#fff",

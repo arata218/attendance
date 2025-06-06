@@ -102,10 +102,10 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
         <table class="bg-white shadow rounded w-full min-w-[320px] border-collapse">
           <thead>
             <tr>
-              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[25%] text-xs sm:text-sm md:text-base">
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[27%] text-xs sm:text-sm md:text-base">
                 団員名
               </th>
-              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[15%] text-xs sm:text-sm md:text-base">
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[16%] text-xs sm:text-sm md:text-base">
                 役職
               </th>
               <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[10%] text-xs sm:text-sm md:text-base">
@@ -117,7 +117,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
               <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[10%] text-xs sm:text-sm md:text-base">
                 欠席
               </th>
-              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[30%] text-xs sm:text-sm md:text-base">
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[27%] text-xs sm:text-sm md:text-base">
                 遅刻/早退時刻
               </th>
             </tr>
