@@ -177,6 +177,14 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                       (status[member.id] !== "出席" &&
                           status[member.id] !== "遅刻"
                         ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : status[member.id] === "出席" && time[member.id] &&
+                            time[member.id] !== "" &&
+                            time[member.id] !== "早退なし"
+                        ? "bg-blue-100 text-black"
+                        : status[member.id] === "遅刻" && time[member.id] &&
+                            time[member.id] !== "" &&
+                            time[member.id] !== "未入力"
+                        ? "bg-red-100 text-black"
                         : "bg-white text-black")}
                   >
                     <option value="">
