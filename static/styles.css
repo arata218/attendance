@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ...既存のスタイル... */
+
+.fc-event-title, .fc-event-title-container {
+  font-size: 0.9em;
+}

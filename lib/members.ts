@@ -9,7 +9,7 @@ export const members: Member[] = [
   { id: "22-02", name: "中村 直樹", role: "副分団長" },
   { id: "20-02", name: "佐藤 花子", role: "班長" },
   { id: "23-01", name: "小林 未来", role: "班長" },
-  { id: "24-01", name: "渡辺 さくら", role: "班長" },
+  { id: "24-01", name: "渡辺 さくらこ", role: "班長" },
   { id: "20-01", name: "山田 太郎" },
   { id: "21-01", name: "鈴木 次郎" },
   { id: "22-01", name: "高橋 健一" },

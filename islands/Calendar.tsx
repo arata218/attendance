@@ -60,7 +60,7 @@ export default function CalendarComponent() {
 
         if (presentCount > 0 || lateCount > 0) {
           evts.push({
-            title: `出${presentCount}遅${lateCount}`,
+            title: `出${presentCount} 遅${lateCount}`,
             start: dateStr,
             color: "#2563eb",
             textColor: "#fff",
@@ -69,7 +69,7 @@ export default function CalendarComponent() {
         }
         if (absentCount > 0 || notInputCount > 0) {
           evts.push({
-            title: `欠${absentCount}未${notInputCount}`,
+            title: `欠${absentCount} 未${notInputCount}`,
             start: dateStr,
             color: "#dc2626",
             textColor: "#fff",
@@ -111,6 +111,17 @@ export default function CalendarComponent() {
           dayMaxEvents: true,
         },
       },
+      dayCellContent: function (arg: { dayNumberText: string; date: Date }) {
+        // JSTで日付数字部分のみリンク化
+        const y = arg.date.getFullYear();
+        const m = String(arg.date.getMonth() + 1).padStart(2, "0");
+        const d = String(arg.date.getDate()).padStart(2, "0");
+        const dateStr = `${y}-${m}-${d}`;
+        return {
+          html:
+            `<a href="/date/${dateStr}" class="fc-date-number">${arg.dayNumberText}</a>`,
+        };
+      },
       datesSet: async (info: DatesSetArg) => {
         // デバッグ用：全ての情報をログ出力
         console.log("datesSet event info:", {
@@ -141,9 +152,6 @@ export default function CalendarComponent() {
           }
         });
       },
-      dateClick: (info: { dateStr: string }) => {
-        globalThis.location.href = `/date/${info.dateStr}`;
-      },
     });
     calendar.render();
     calendarInstance.current = calendar;
@@ -171,7 +179,7 @@ export default function CalendarComponent() {
   }, []);
 
   return (
-    <div class="w-full px-2 sm:px-4 md:px-6 lg:px-8">
+    <div class="px-2 sm:px-4 md:px-6 lg:px-8 w-full">
       <div
         ref={calendarRef}
         class="bg-white shadow-lg mx-auto p-1 sm:p-2 md:p-4 rounded-lg w-full max-w-4xl"

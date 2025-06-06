@@ -92,32 +92,32 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
 
   return (
     <form
-      class="flex flex-col items-center gap-4 sm:gap-6 w-full px-2 sm:px-4 md:px-6 lg:px-8"
+      class="flex flex-col items-center gap-4 sm:gap-6 px-2 sm:px-4 md:px-6 lg:px-8 w-full"
       onSubmit={handleSubmit}
     >
-      <div class="w-full max-w-3xl mx-auto">
+      <div class="mx-auto w-full max-w-3xl">
         <NavButtons dateStr={dateStr} />
       </div>
-      <div class="w-full max-w-3xl mx-auto">
-        <table class="bg-white shadow rounded border-collapse w-full min-w-[320px]">
+      <div class="mx-auto w-full max-w-3xl">
+        <table class="bg-white shadow rounded w-full min-w-[320px] border-collapse">
           <thead>
             <tr>
-              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[25%]">
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[25%] text-xs sm:text-sm md:text-base">
                 団員名
               </th>
-              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[20%]">
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[15%] text-xs sm:text-sm md:text-base">
                 役職
               </th>
-              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[10%]">
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[10%] text-xs sm:text-sm md:text-base">
                 出席
               </th>
-              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[10%]">
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[10%] text-xs sm:text-sm md:text-base">
                 遅刻
               </th>
-              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[10%]">
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[10%] text-xs sm:text-sm md:text-base">
                 欠席
               </th>
-              <th class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base w-[25%]">
+              <th class="px-1 sm:px-2 py-1 sm:py-2 border w-[30%] text-xs sm:text-sm md:text-base">
                 遅刻/早退時刻
               </th>
             </tr>
@@ -125,10 +125,10 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
           <tbody>
             {members.map((member) => (
               <tr key={member.id}>
-                <td class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base">
+                <td class="px-1 sm:px-2 py-1 sm:py-2 border text-sm sm:text-base md:text-lg">
                   {member.name}
                 </td>
-                <td class="px-1 sm:px-2 py-1 sm:py-2 border text-center text-xs sm:text-sm md:text-base">
+                <td class="px-1 sm:px-2 py-1 sm:py-2 border text-xs sm:text-sm md:text-base text-center">
                   {member.role ?? "団員"}
                 </td>
                 <td class="px-1 sm:px-2 py-1 sm:py-2 border text-center">
@@ -138,7 +138,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                     value="出席"
                     checked={status[member.id] === "出席"}
                     onChange={() => handleChange(member.id, "出席")}
-                    class="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5"
+                    class="w-3 sm:w-4 md:w-5 h-3 sm:h-4 md:h-5"
                   />
                 </td>
                 <td class="px-1 sm:px-2 py-1 sm:py-2 border text-center">
@@ -148,7 +148,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                     value="遅刻"
                     checked={status[member.id] === "遅刻"}
                     onChange={() => handleChange(member.id, "遅刻")}
-                    class="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5"
+                    class="w-3 sm:w-4 md:w-5 h-3 sm:h-4 md:h-5"
                   />
                 </td>
                 <td class="px-1 sm:px-2 py-1 sm:py-2 border text-center">
@@ -158,7 +158,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                     value="欠席"
                     checked={status[member.id] === "欠席"}
                     onChange={() => handleChange(member.id, "欠席")}
-                    class="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5"
+                    class="w-3 sm:w-4 md:w-5 h-3 sm:h-4 md:h-5"
                   />
                 </td>
                 <td class="px-1 sm:px-2 py-1 sm:py-2 border text-center">
@@ -173,7 +173,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
                     }}
                     disabled={status[member.id] !== "出席" &&
                       status[member.id] !== "遅刻"}
-                    class={`px-0 sm:px-2 py-1 border rounded w-16 sm:w-20 md:w-24 text-xs sm:text-sm md:text-base transition-colors ` +
+                    class={`px-1 sm:px-2 py-1 border rounded w-20 sm:w-24 md:w-28 text-xs sm:text-sm md:text-base transition-colors ` +
                       (status[member.id] !== "出席" &&
                           status[member.id] !== "遅刻"
                         ? "bg-gray-100 text-gray-400 cursor-not-allowed"
@@ -198,7 +198,7 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
           </tbody>
         </table>
       </div>
-      <div class="w-full max-w-3xl mx-auto">
+      <div class="mx-auto w-full max-w-3xl">
         <NavButtons dateStr={dateStr} />
       </div>
     </form>
