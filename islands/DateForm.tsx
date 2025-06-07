@@ -1,60 +1,30 @@
 /// <reference lib="deno.unstable"/>
 
-import { useEffect, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 import NavButtons from "../components/NavButtons.tsx";
 import { members } from "../lib/members.ts";
 import { timeOptions } from "../lib/timeOptions.ts";
 
 type AttendanceValue = { status: string; time?: string } | undefined;
 
-export default function DateForm({ dateStr }: { dateStr: string }) {
+export default function DateForm(
+  { dateStr, attendance }: {
+    dateStr: string;
+    attendance: Record<string, AttendanceValue>;
+  },
+) {
   // 各メンバーの出欠状態を管理
   const [status, setStatus] = useState<Record<string, string>>(
-    Object.fromEntries(members.map((m) => [m.id, ""])),
+    Object.fromEntries(
+      members.map((m) => [m.id, attendance?.[m.id]?.status ?? ""]),
+    ),
   );
   // 各メンバーの遅刻/早退時刻を統一して管理
   const [time, setTime] = useState<Record<string, string>>(
-    Object.fromEntries(members.map((m) => [m.id, ""])),
+    Object.fromEntries(
+      members.map((m) => [m.id, attendance?.[m.id]?.time ?? ""]),
+    ),
   );
-
-  // ページ表示時にデータを取得
-  useEffect(() => {
-    const fetchAttendance = async () => {
-      try {
-        const res = await fetch(`/api/attendance?dateStr=${dateStr}`);
-        if (!res.ok) {
-          console.error("Failed to fetch attendance data:", res.statusText);
-          return;
-        }
-        const data: Record<string, AttendanceValue> = await res.json();
-
-        // 取得したデータで状態を更新
-        const newStatus: Record<string, string> = {};
-        const newTime: Record<string, string> = {};
-
-        members.forEach((member) => {
-          const value = data[member.id];
-          if (typeof value === "string") {
-            newStatus[member.id] = value;
-            newTime[member.id] = "";
-          } else if (value && typeof value === "object") {
-            newStatus[member.id] = value.status;
-            newTime[member.id] = value.time || "";
-          } else {
-            newStatus[member.id] = "";
-            newTime[member.id] = "";
-          }
-        });
-
-        setStatus(newStatus);
-        setTime(newTime);
-      } catch (error) {
-        console.error("Error fetching attendance data:", error);
-      }
-    };
-
-    fetchAttendance();
-  }, [dateStr]);
 
   const handleChange = (member: string, value: string) => {
     setStatus((prev) => ({ ...prev, [member]: value }));
@@ -66,35 +36,24 @@ export default function DateForm({ dateStr }: { dateStr: string }) {
     setTime((prev) => ({ ...prev, [member]: value }));
   };
 
-  const handleSubmit = async (e: Event) => {
-    e.preventDefault();
-    // 保存する値の構造: { [id]: { status, time? } }
-    const value = Object.fromEntries(
-      members.map((m) => [
-        m.id,
-        time[m.id]
-          ? { status: status[m.id], time: time[m.id] }
-          : { status: status[m.id] },
-      ]),
-    );
-    // API経由で保存
-    const res = await fetch("/api/attendance", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ dateStr, value }),
-    });
-    if (res.ok) {
-      globalThis.location.href = "/";
-    } else {
-      alert("保存に失敗しました");
-    }
-  };
-
   return (
     <form
+      method="POST"
       class="flex flex-col items-center gap-4 sm:gap-6 px-2 sm:px-4 md:px-6 lg:px-8 w-full"
-      onSubmit={handleSubmit}
     >
+      <input type="hidden" name="dateStr" value={dateStr} />
+      <input
+        type="hidden"
+        name="value"
+        value={JSON.stringify(Object.fromEntries(
+          members.map((m) => [
+            m.id,
+            time[m.id]
+              ? { status: status[m.id], time: time[m.id] }
+              : { status: status[m.id] },
+          ]),
+        ))}
+      />
       <div class="mx-auto w-full max-w-3xl">
         <NavButtons dateStr={dateStr} />
       </div>
