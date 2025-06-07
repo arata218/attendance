@@ -91,84 +91,59 @@ export default function CalendarComponent() {
       String(today.getMonth() + 1).padStart(2, "0")
     }`;
 
-    const calendar = new Calendar(calendarRef.current, {
-      plugins: [dayGridPlugin, interactionPlugin],
-      initialView: "dayGridMonth",
-      headerToolbar: {
-        left: "prev,next",
-        center: "title",
-        right: "today",
-      },
-      locale: "ja",
-      events: [],
-      height: "auto",
-      contentHeight: "auto",
-      aspectRatio: 1.35,
-      views: {
-        dayGridMonth: {
-          titleFormat: { year: "numeric", month: "short" },
-          dayHeaderFormat: { weekday: "short" },
-          dayMaxEvents: true,
+    (async () => {
+      const evts = await fetchMonthAttendance(ym);
+      const calendar = new Calendar(calendarRef.current!, {
+        plugins: [dayGridPlugin, interactionPlugin],
+        initialView: "dayGridMonth",
+        headerToolbar: {
+          left: "prev,next",
+          center: "title",
+          right: "today",
         },
-      },
-      dayCellContent: function (arg: { dayNumberText: string; date: Date }) {
-        // JSTで日付数字部分のみリンク化
-        const y = arg.date.getFullYear();
-        const m = String(arg.date.getMonth() + 1).padStart(2, "0");
-        const d = String(arg.date.getDate()).padStart(2, "0");
-        const dateStr = `${y}-${m}-${d}`;
-        return {
-          html:
-            `<a href="/date/${dateStr}" class="fc-date-number">${arg.dayNumberText}</a>`,
-        };
-      },
-      datesSet: async (info: DatesSetArg) => {
-        // デバッグ用：全ての情報をログ出力
-        console.log("datesSet event info:", {
-          startStr: info.startStr,
-          endStr: info.endStr,
-          start: info.start.toISOString(),
-          end: info.end.toISOString(),
-        });
-
-        if (!calendarInstance.current) return;
-
-        // カレンダーの現在表示されている日付から月を取得
-        const currentDate = calendarInstance.current.getDate();
-        const currentMonth = `${currentDate.getFullYear()}-${
-          String(currentDate.getMonth() + 1).padStart(2, "0")
-        }`;
-        console.log("Current month from calendar date:", currentMonth);
-
-        const evts = await fetchMonthAttendance(currentMonth);
-        console.log("Fetched events for month:", currentMonth, evts);
-
-        calendarInstance.current.removeAllEvents();
-        evts.forEach((evt) => {
-          try {
-            calendarInstance.current!.addEvent(evt);
-          } catch (error) {
-            console.error("Error adding event:", evt, error);
-          }
-        });
-      },
-    });
-    calendar.render();
-    calendarInstance.current = calendar;
-
-    // 初期表示月のイベントをfetchしてaddEvent
-    fetchMonthAttendance(ym).then((evts) => {
-      if (calendarInstance.current) {
-        calendarInstance.current.removeAllEvents();
-        evts.forEach((evt) => {
-          try {
-            calendarInstance.current!.addEvent(evt);
-          } catch (error) {
-            console.error("Error adding event:", evt, error);
-          }
-        });
-      }
-    });
+        locale: "ja",
+        events: evts,
+        height: "auto",
+        contentHeight: "auto",
+        aspectRatio: 1.35,
+        views: {
+          dayGridMonth: {
+            titleFormat: { year: "numeric", month: "short" },
+            dayHeaderFormat: { weekday: "short" },
+            dayMaxEvents: true,
+          },
+        },
+        dayCellContent: function (arg: { dayNumberText: string; date: Date }) {
+          // JSTで日付数字部分のみリンク化
+          const y = arg.date.getFullYear();
+          const m = String(arg.date.getMonth() + 1).padStart(2, "0");
+          const d = String(arg.date.getDate()).padStart(2, "0");
+          const dateStr = `${y}-${m}-${d}`;
+          return {
+            html:
+              `<a href="/date/${dateStr}" class="fc-date-number">${arg.dayNumberText}</a>`,
+          };
+        },
+        datesSet: async (_info: DatesSetArg) => {
+          if (!calendarInstance.current) return;
+          const currentDate = calendarInstance.current.getDate();
+          const currentMonth = `${currentDate.getFullYear()}-${
+            String(currentDate.getMonth() + 1).padStart(2, "0")
+          }`;
+          const evts = await fetchMonthAttendance(currentMonth);
+          calendarInstance.current.removeAllEvents();
+          evts.forEach((evt) => {
+            try {
+              calendarInstance.current!.addEvent(evt);
+            } catch (error) {
+              console.error("Error adding event:", evt, error);
+            }
+          });
+        },
+      });
+      calendar.render();
+      calendarInstance.current = calendar;
+    })();
 
     return () => {
       if (calendarInstance.current) {
