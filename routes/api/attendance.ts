@@ -1,7 +1,6 @@
 import { Handlers } from "$fresh/server.ts";
 
 export const handler: Handlers = {
-  // GETは月集計APIのみ残す
   async GET(req) {
     const url = new URL(req.url);
     const month = url.searchParams.get("month");

@@ -1,5 +1,3 @@
-/// <reference lib="deno.unstable"/>
-
 import { useState } from "preact/hooks";
 import NavButtons from "../components/NavButtons.tsx";
 import { members } from "../lib/members.ts";
@@ -8,9 +6,10 @@ import { timeOptions } from "../lib/timeOptions.ts";
 type AttendanceValue = { status: string; time?: string } | undefined;
 
 export default function DateForm(
-  { dateStr, attendance }: {
+  { dateStr, attendance, error }: {
     dateStr: string;
     attendance: Record<string, AttendanceValue>;
+    error?: string | null;
   },
 ) {
   // 各メンバーの出欠状態を管理
@@ -41,6 +40,9 @@ export default function DateForm(
       method="POST"
       class="flex flex-col items-center gap-4 sm:gap-6 px-2 sm:px-4 md:px-6 lg:px-8 w-full"
     >
+      {error && (
+        <div class="mb-2 font-bold text-red-600 text-center">{error}</div>
+      )}
       <input type="hidden" name="dateStr" value={dateStr} />
       <input
         type="hidden"
