@@ -3,7 +3,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useRef } from "preact/hooks";
 
-type AttendanceValue = string | { status: string; time?: string } | undefined;
+export type AttendanceValue = { status: string; time?: string } | undefined;
 type EventLike = {
   title: string;
   start: string;
@@ -34,29 +34,17 @@ export default function CalendarComponent() {
       const evts: EventLike[] = [];
 
       Object.entries(monthData).forEach(([dateStr, attendance]) => {
-        const presentCount = Object.values(attendance).filter((v) => {
-          if (typeof v === "string") return v === "出席";
-          if (v && typeof v === "object") return v.status === "出席";
-          return false;
-        }).length;
-
-        const lateCount = Object.values(attendance).filter((v) => {
-          if (typeof v === "string") return v === "遅刻";
-          if (v && typeof v === "object") return v.status === "遅刻";
-          return false;
-        }).length;
-
-        const absentCount = Object.values(attendance).filter((v) => {
-          if (typeof v === "string") return v === "欠席";
-          if (v && typeof v === "object") return v.status === "欠席";
-          return false;
-        }).length;
-
-        const notInputCount = Object.values(attendance).filter((v) => {
-          if (typeof v === "string") return v === "";
-          if (v && typeof v === "object") return v.status === "";
-          return false;
-        }).length;
+        const presentCount = Object.values(attendance).filter((v) =>
+          v?.status === "出席"
+        ).length;
+        const lateCount = Object.values(attendance).filter((v) =>
+          v?.status === "遅刻"
+        ).length;
+        const absentCount = Object.values(attendance).filter((v) =>
+          v?.status === "欠席"
+        ).length;
+        const notInputCount =
+          Object.values(attendance).filter((v) => v?.status === "").length;
 
         if (presentCount > 0 || lateCount > 0) {
           evts.push({
@@ -157,7 +145,7 @@ export default function CalendarComponent() {
     <div class="px-2 sm:px-4 md:px-6 lg:px-8 w-full">
       <div
         ref={calendarRef}
-        class="bg-white shadow-lg mx-auto p-1 sm:p-2 md:p-4 rounded-lg w-full max-w-4xl"
+        class="bg-white shadow-lg mx-auto p-1 sm:p-2 md:p-4 rounded w-full max-w-4xl"
       />
     </div>
   );

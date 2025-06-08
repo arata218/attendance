@@ -1,4 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
+import type { AttendanceValue } from "../../islands/Calendar.tsx";
 import DateForm from "../../islands/DateForm.tsx";
 
 export const handler: Handlers = {
@@ -13,7 +14,10 @@ export const handler: Handlers = {
   async POST(req, ctx) {
     const form = await req.formData();
     const dateStr = form.get("dateStr") as string;
-    const value = JSON.parse(form.get("value") as string);
+    const value = JSON.parse(form.get("value") as string) as Record<
+      string,
+      AttendanceValue
+    >;
     const kv = await Deno.openKv();
     // トランザクションで保存
     const atomic = kv.atomic();
