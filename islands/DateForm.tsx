@@ -5,8 +5,9 @@ import { timeOptions } from "../lib/timeOptions.ts";
 import type { AttendanceValue } from "./Calendar.tsx";
 
 export default function DateForm(
-  { dateStr, attendance, error }: {
+  { dateStr, versionstamp, attendance, error }: {
     dateStr: string;
+    versionstamp: string;
     attendance: Record<string, AttendanceValue>;
     error?: string | null;
   },
@@ -54,6 +55,7 @@ export default function DateForm(
         <div class="mb-2 font-bold text-red-600 text-center">{error}</div>
       )}
       <input type="hidden" name="dateStr" value={dateStr} />
+      <input type="hidden" name="versionstamp" value={versionstamp} />
       <input
         type="hidden"
         name="value"
